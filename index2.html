@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>brncraft</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      background: radial-gradient(circle at top, #3a0ca3, #240046, #10002b);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      animation: bgMove 10s infinite alternate;
+    }
+
+    @keyframes bgMove {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+
+    .container {
+      text-align: center;
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.08);
+      padding: 40px 60px;
+      border-radius: 20px;
+      box-shadow: 0 0 40px rgba(180, 120, 255, 0.4);
+    }
+
+    h1 {
+      font-size: 3rem;
+      letter-spacing: 3px;
+      margin-bottom: 20px;
+      color: #dcbcff;
+      text-shadow: 0 0 15px rgba(200, 140, 255, 0.8);
+    }
+
+    #timer {
+      font-size: 3.5rem;
+      letter-spacing: 4px;
+      margin-top: 20px;
+    }
+
+    #message {
+      display: none;
+      margin-top: 30px;
+      font-size: 2.2rem;
+      color: #fff;
+      animation: glow 1.5s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #fff; }
+      to { text-shadow: 0 0 30px #ffccff, 0 0 60px #c77dff; }
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="fireworks"></canvas>
+
+  <div class="container">
+    <h1>brncraft</h1>
+    <div id="timer">00:00:10</div>
+    <div id="message">🎆 Feliz Ano Novo! 🎆</div>
+  </div>
+
+  <!-- Som de fogos -->
+  <audio id="fireSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_2b8cf2b5ab.mp3" preload="auto"></audio>
+
+  <script>
+    let time = 10; // segundos
+    const timerEl = document.getElementById("timer");
+    const messageEl = document.getElementById("message");
+    const fireSound = document.getElementById("fireSound");
+
+    const interval = setInterval(() => {
+      let minutes = String(Math.floor(time / 60)).padStart(2, "0");
+      let seconds = String(time % 60).padStart(2, "0");
+
+      timerEl.textContent = `${minutes}:${seconds}`;
+
+      if (time === 0) {
+        clearInterval(interval);
+        timerEl.style.display = "none";
+        messageEl.style.display = "block";
+        fireSound.play();
+        startFireworks();
+      }
+
+      time--;
+    }, 1000);
+
+    /* =========================
+       Fogos de artifício
+    ========================= */
+    const canvas = document.getElementById("fireworks");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    function random(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    function startFireworks() {
+      setInterval(() => {
+        const x = random(100, canvas.width - 100);
+        const y = random(50, canvas.height / 2);
+        explode(x, y);
+      }, 500);
+    }
+
+    function explode(x, y) {
+      for (let i = 0; i < 60; i++) {
+        particles.push({
+          x,
+          y,
+          dx: random(-4, 4),
+          dy: random(-4, 4),
+          life: 60,
+          color: `hsl(${random(260, 300)}, 100%, 70%)`
+        });
+      }
+    }
+
+    const particles = [];
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      particles.forEach((p, i) => {
+        p.x += p.dx;
+        p.y += p.dy;
+        p.life--;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+
+        if (p.life <= 0) particles.splice(i, 1);
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
+</body>
+</html>
