@@ -1,205 +1,258 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>brncraft</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>brncraft</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Arial, sans-serif;
-    }
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
 
-    body {
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #e0f7ff;
-      background:
-        linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.7)),
-        url("fundo.jpg") center/cover no-repeat;
-    }
+body{
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  color:#cbd5f5;
+  background:
+    linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.85)),
+    url("fundo.png") center/cover no-repeat;
+}
 
-    .container {
-      text-align: center;
-      backdrop-filter: blur(14px);
-      background: rgba(0, 120, 255, 0.15);
-      padding: 40px 60px;
-      border-radius: 22px;
-      box-shadow: 0 0 60px rgba(0, 180, 255, 0.7);
-      z-index: 2;
-    }
+/* CONTAINER */
+.container{
+  text-align:center;
+  backdrop-filter:blur(16px);
+  background:rgba(10,15,35,.75);
+  padding:42px 64px;
+  border-radius:24px;
+  box-shadow:
+    0 0 60px rgba(40,80,200,.6),
+    inset 0 0 40px rgba(0,0,0,.9);
+  z-index:2;
+}
 
-    h1 {
-      font-size: 3rem;
-      letter-spacing: 4px;
-      margin-bottom: 10px;
-      color: #7dd3fc;
-      text-shadow: 0 0 25px rgba(0, 200, 255, 1);
-    }
+/* TITULO */
+h1{
+  font-size:3.1rem;
+  letter-spacing:6px;
+  font-weight:600;
+  color:#9aa4ff;
+  text-shadow:
+    0 0 15px rgba(90,120,255,.6),
+    0 0 40px rgba(40,60,200,.8);
+}
 
-    #logo {
-      width: 120px;
-      margin-bottom: 15px;
-    }
+/* TIMER */
+#timer{
+  margin-top:22px;
+  font-size:3.6rem;
+  letter-spacing:6px;
+  color:#e0e7ff;
+}
 
-    #timer {
-      font-size: 3.5rem;
-      letter-spacing: 5px;
-      margin-top: 15px;
-    }
+/* MENSAGEM FINAL */
+#message{
+  display:none;
+  margin-top:28px;
+  font-size:2.4rem;
+  letter-spacing:4px;
+  color:#e0e7ff;
+  animation:pulse 1.6s infinite alternate;
+}
 
-    #message {
-      display: none;
-      margin-top: 25px;
-      font-size: 2.2rem;
-      animation: glow 1.5s infinite alternate;
-    }
+@keyframes pulse{
+  from{ text-shadow:0 0 15px rgba(120,150,255,.6); }
+  to{
+    text-shadow:
+      0 0 35px rgba(120,150,255,1),
+      0 0 80px rgba(60,90,220,1);
+  }
+}
 
-    @keyframes glow {
-      from { text-shadow: 0 0 15px #7dd3fc; }
-      to { text-shadow: 0 0 40px #38bdf8, 0 0 80px #0ea5e9; }
-    }
+/* BOTÃO DE MÚSICA */
+#musicBtn{
+  margin-top:22px;
+  padding:10px 26px;
+  font-size:1rem;
+  letter-spacing:3px;
+  color:#c7d2fe;
+  background:rgba(20,30,80,.8);
+  border:1px solid rgba(120,150,255,.6);
+  border-radius:30px;
+  cursor:pointer;
+  box-shadow:0 0 20px rgba(60,90,220,.6);
+}
+#musicBtn:hover{
+  box-shadow:0 0 35px rgba(120,150,255,.9);
+}
 
-    #score {
-      margin-top: 20px;
-      font-size: 1.2rem;
-      color: #bae6fd;
-    }
+/* SCORE */
+#score{
+  margin-top:20px;
+  font-size:1.1rem;
+  color:#9aa4ff;
+  letter-spacing:2px;
+}
 
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      pointer-events: none;
-    }
+/* FOGOS */
+canvas{
+  position:fixed;
+  top:0;
+  left:0;
+  pointer-events:none;
+}
 
-    /* MINIGAME */
-    #orb {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #7dd3fc, #0284c7);
-      box-shadow: 0 0 30px #38bdf8;
-      position: absolute;
-      cursor: pointer;
-      z-index: 3;
-    }
-
-    #orb:active {
-      transform: scale(0.85);
-    }
-  </style>
+/* MINIGAME */
+#orb{
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  background:radial-gradient(circle,#9aa4ff,#1e3a8a);
+  box-shadow:0 0 35px rgba(120,150,255,.9);
+  position:absolute;
+  cursor:pointer;
+  z-index:3;
+}
+#orb:active{ transform:scale(.85); }
+</style>
 </head>
 
 <body>
-  <canvas id="fireworks"></canvas>
 
-  <div class="container">
-    <h1>brncraft</h1>
+<canvas id="fireworks"></canvas>
 
-    <!-- LOGO (opcional) -->
-    <img id="logo" src="logo.png" alt="logo">
+<div class="container">
+  <h1>brncraft</h1>
 
-    <div id="timer">00:00:10</div>
-    <div id="message">🎆 Feliz Ano Novo! 🎆</div>
-    <div id="score">🎮 Pontos: <span id="points">0</span></div>
-  </div>
+  <div id="timer">--:--:--</div>
+  <div id="message">🎆 FELIZ ANO NOVO 🎆</div>
 
-  <div id="orb"></div>
+  <button id="musicBtn">PLAY MUSIC</button>
 
-  <audio id="fireSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_2b8cf2b5ab.mp3"></audio>
+  <div id="score">PONTOS <span id="points">0</span></div>
+</div>
 
-  <script>
-    /* CRONÔMETRO */
-    let time = 10;
-    const timerEl = document.getElementById("timer");
-    const messageEl = document.getElementById("message");
-    const fireSound = document.getElementById("fireSound");
+<div id="orb"></div>
 
-    const interval = setInterval(() => {
-      let minutes = String(Math.floor(time / 60)).padStart(2, "0");
-      let seconds = String(time % 60).padStart(2, "0");
-      timerEl.textContent = `${minutes}:${seconds}`;
+<!-- ÁUDIOS -->
+<audio id="bgMusic" src="music.mp3" loop></audio>
+<audio id="fireSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_2b8cf2b5ab.mp3"></audio>
 
-      if (time === 0) {
-        clearInterval(interval);
-        timerEl.style.display = "none";
-        messageEl.style.display = "block";
-        fireSound.play();
-        startFireworks();
-      }
-      time--;
-    }, 1000);
+<script>
+/* ===== BOTÃO DE MÚSICA ===== */
+const bgMusic = document.getElementById("bgMusic");
+const musicBtn = document.getElementById("musicBtn");
+let musicOn = false;
 
-    /* FOGOS */
-    const canvas = document.getElementById("fireworks");
-    const ctx = canvas.getContext("2d");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    const particles = [];
+musicBtn.onclick = () => {
+  if(!musicOn){
+    bgMusic.play();
+    musicBtn.textContent = "PAUSE MUSIC";
+    musicOn = true;
+  } else {
+    bgMusic.pause();
+    musicBtn.textContent = "PLAY MUSIC";
+    musicOn = false;
+  }
+};
 
-    function rand(min, max) {
-      return Math.random() * (max - min) + min;
-    }
+/* ===== CRONÔMETRO REAL ===== */
+const timerEl = document.getElementById("timer");
+const messageEl = document.getElementById("message");
+const fireSound = document.getElementById("fireSound");
 
-    function startFireworks() {
-      setInterval(() => {
-        explode(rand(100, canvas.width - 100), rand(50, canvas.height / 2));
-      }, 500);
-    }
+function updateCountdown(){
+  const now = new Date();
+  const newYear = new Date(now.getFullYear() + 1, 0, 1, 0, 0, 0);
+  const diff = newYear - now;
 
-    function explode(x, y) {
-      for (let i = 0; i < 60; i++) {
-        particles.push({
-          x, y,
-          dx: rand(-4, 4),
-          dy: rand(-4, 4),
-          life: 60,
-          color: `hsl(${rand(190,210)},100%,65%)`
-        });
-      }
-    }
+  if(diff <= 0){
+    timerEl.style.display = "none";
+    messageEl.style.display = "block";
+    fireSound.play();
+    startFireworks();
+    clearInterval(counter);
+    return;
+  }
 
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach((p, i) => {
-        p.x += p.dx;
-        p.y += p.dy;
-        p.life--;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.fill();
-        if (p.life <= 0) particles.splice(i, 1);
-      });
-      requestAnimationFrame(animate);
-    }
-    animate();
+  const h = String(Math.floor(diff / 1000 / 60 / 60)).padStart(2,"0");
+  const m = String(Math.floor(diff / 1000 / 60) % 60).padStart(2,"0");
+  const s = String(Math.floor(diff / 1000) % 60).padStart(2,"0");
 
-    /* MINIGAME */
-    const orb = document.getElementById("orb");
-    const pointsEl = document.getElementById("points");
-    let points = 0;
+  timerEl.textContent = `${h}:${m}:${s}`;
+}
 
-    function moveOrb() {
-      orb.style.left = rand(20, window.innerWidth - 80) + "px";
-      orb.style.top = rand(20, window.innerHeight - 80) + "px";
-    }
+const counter = setInterval(updateCountdown,1000);
+updateCountdown();
 
-    orb.onclick = () => {
-      points++;
-      pointsEl.textContent = points;
-      moveOrb();
-    };
+/* ===== FOGOS ===== */
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+canvas.width = innerWidth;
+canvas.height = innerHeight;
 
-    setInterval(moveOrb, 1200);
-    moveOrb();
-  </script>
+const particles = [];
+const rand = (a,b)=>Math.random()*(b-a)+a;
+
+function startFireworks(){
+  setInterval(()=>{
+    explode(rand(100,canvas.width-100),rand(50,canvas.height/2));
+  },450);
+}
+
+function explode(x,y){
+  for(let i=0;i<70;i++){
+    particles.push({
+      x,y,
+      dx:rand(-4.5,4.5),
+      dy:rand(-4.5,4.5),
+      life:70,
+      color:`hsl(${rand(200,220)},100%,65%)`
+    });
+  }
+}
+
+(function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particles.forEach((p,i)=>{
+    p.x+=p.dx;
+    p.y+=p.dy;
+    p.life--;
+    ctx.fillStyle=p.color;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,2,0,Math.PI*2);
+    ctx.fill();
+    if(p.life<=0) particles.splice(i,1);
+  });
+  requestAnimationFrame(animate);
+})();
+
+/* ===== MINIGAME ===== */
+const orb = document.getElementById("orb");
+const pointsEl = document.getElementById("points");
+let points = 0;
+
+function moveOrb(){
+  orb.style.left = rand(20,innerWidth-80)+"px";
+  orb.style.top  = rand(20,innerHeight-80)+"px";
+}
+
+orb.onclick = ()=>{
+  points++;
+  pointsEl.textContent = points;
+  moveOrb();
+};
+
+setInterval(moveOrb,1200);
+moveOrb();
+</script>
+
 </body>
 </html>
